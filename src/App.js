@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import './index.css'
+import Popup from './components/popup/popup.js'
 
 const api = {
   key: process.env.REACT_APP_WEATHER_API_KEY,
@@ -9,6 +10,8 @@ const api = {
 function App() {
   const [query, setQuery] = useState('')
   const [weather, setWeather] = useState({})
+  const [isOpen, setIsOpen] = useState(false)
+
   const search = (evt) => {
     if (evt.key === 'Enter') {
       fetch(`${api.base}forecast?q=${query}&appid=${api.key}&units=imperial`)
@@ -61,55 +64,75 @@ function App() {
         seen += 1
       }
       if (seen === 0) {
-        day1.push(
-          [
-            weather.list[i].weather[0].description +
-              ' ' +
-              Math.round(weather.list[i].main.temp),
-          ] + '°F'
-        )
+        day1.push([
+          weather.list[i].weather[0].main +
+            ' ' +
+            Math.round(weather.list[i].main.temp) +
+            '°F',
+          Math.round(weather.list[i].main.temp) + '°F',
+          weather.list[i].main.feels_like,
+          weather.list[i].main.humidity,
+          weather.list[i].weather[0].description,
+          weather.list[i].wind.speed,
+        ])
       }
       if (seen === 1) {
-        day2.push(
-          [
-            weather.list[i].weather[0].description +
-              ' ' +
-              Math.round(weather.list[i].main.temp),
-          ] + '°F'
-        )
+        day2.push([
+          weather.list[i].weather[0].main +
+            ' ' +
+            Math.round(weather.list[i].main.temp) +
+            '°F',
+          weather.list[i].main.feels_like,
+          weather.list[i].main.humidity,
+          weather.list[i].weather[0].description,
+          weather.list[i].wind.speed,
+        ])
       }
       if (seen === 2) {
-        day3.push(
-          [
-            weather.list[i].weather[0].description +
-              ' ' +
-              Math.round(weather.list[i].main.temp),
-          ] + '°F'
-        )
+        day3.push([
+          weather.list[i].weather[0].main +
+            ' ' +
+            Math.round(weather.list[i].main.temp) +
+            '°F',
+          weather.list[i].main.feels_like,
+          weather.list[i].main.humidity,
+          weather.list[i].weather[0].description,
+          weather.list[i].wind.speed,
+        ])
       }
       if (seen === 3) {
-        day4.push(
-          [
-            weather.list[i].weather[0].description +
-              ' ' +
-              Math.round(weather.list[i].main.temp),
-          ] + '°F'
-        )
+        day4.push([
+          weather.list[i].weather[0].main +
+            ' ' +
+            Math.round(weather.list[i].main.temp) +
+            '°F',
+          weather.list[i].main.feels_like,
+          weather.list[i].main.humidity,
+          weather.list[i].weather[0].description,
+          weather.list[i].wind.speed,
+        ])
       }
       if (seen === 4) {
-        day5.push(
-          [
-            weather.list[i].weather[0].description +
-              ' ' +
-              Math.round(weather.list[i].main.temp),
-          ] + '°F'
-        )
+        day5.push([
+          weather.list[i].weather[0].main +
+            ' ' +
+            Math.round(weather.list[i].main.temp) +
+            '°F',
+          weather.list[i].main.feels_like,
+          weather.list[i].main.humidity,
+          weather.list[i].weather[0].description,
+          weather.list[i].wind.speed,
+        ])
       }
     }
     while (day1.length < 8) {
       day1.unshift('')
     }
     return
+  }
+
+  const togglePopup = () => {
+    setIsOpen(!isOpen)
   }
 
   return (
@@ -164,15 +187,28 @@ function App() {
                 {day1.map((e, i) => (
                   <tr>
                     <td>{time[i]}</td>
-                    <td>{day1[i]}</td>
-                    <td>{day2[i]}</td>
-                    <td>{day3[i]}</td>
-                    <td>{day4[i]}</td>
-                    <td>{day5[i]}</td>
+                    <td>
+                      <button onClick={togglePopup}>{day1[i][0]}</button>
+                    </td>
+                    <td>{day2[i][0]}</td>
+                    <td>{day3[i][0]}</td>
+                    <td>{day4[i][0]}</td>
+                    <td>{day5[i][0]}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            {isOpen && (
+              <Popup
+                handleClose={togglePopup}
+                content={
+                  <div>
+                    <h2>Title</h2>
+                    <p>This is sample content for my popup.</p>
+                  </div>
+                }
+              />
+            )}
           </div>
         ) : (
           ''
